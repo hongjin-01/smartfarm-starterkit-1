@@ -1,0 +1,44 @@
+# Gradle
+backend/.gradle/
+backend/build/
+backend/gradlew
+backend/gradlew.bat
+backend/gradle/
+
+# Java
+*.class
+*.jar
+*.war
+
+# Spring Boot
+backend/src/main/resources/application-local.yml
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# 환경변수
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes (로컬 데이터)
+docker/data/
+
+# Paho MQTT 클라이언트 영속성 디렉토리
+backend/smartfarm-backend-*/
+
+# Claude
+.claude/settings.local.json
