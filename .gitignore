@@ -40,5 +40,8 @@ docker/data/
 # Paho MQTT 클라이언트 영속성 디렉토리
 backend/smartfarm-backend-*/
 
+# MQTT 인증 (자격증명 포함)
+docker/mosquitto/passwd
+
 # Claude
 .claude/settings.local.json

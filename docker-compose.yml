@@ -7,6 +7,7 @@ services:
       - "9002:9001"
     volumes:
       - ./docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./docker/mosquitto/passwd:/mosquitto/config/passwd
       - mosquitto-data:/mosquitto/data
       - mosquitto-log:/mosquitto/log
     restart: unless-stopped
@@ -15,9 +16,9 @@ services:
     image: timescale/timescaledb:latest-pg15
     container_name: smartfarm-db
     environment:
-      POSTGRES_DB: smartfarm
-      POSTGRES_USER: smartfarm
-      POSTGRES_PASSWORD: smartfarm1234
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:

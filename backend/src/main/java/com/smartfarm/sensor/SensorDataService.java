@@ -10,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
@@ -25,7 +26,8 @@ public class SensorDataService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @Transactional
+    // @Transactional 없음: repository.save()의 기본 트랜잭션(REQUIRED)이 즉시 커밋되므로
+    // DB 커밋 이후 Redis/WebSocket/Control 순서가 보장됨. 롤백 시 캐시 오염 없음.
     public SensorData save(String deviceId, SensorPayload payload) {
         SensorData sensorData = SensorData.builder()
             .deviceId(deviceId)
@@ -37,14 +39,12 @@ public class SensorDataService {
 
         SensorData saved = sensorDataRepository.save(sensorData);
 
-        // 최신 센서값 Redis 캐시
+        // DB 커밋 완료 후 실행
         String redisKey = String.format("sensor:%s:%s", deviceId, payload.getSensorType());
-        redisTemplate.opsForValue().set(redisKey, payload.getValue());
+        redisTemplate.opsForValue().set(redisKey, payload.getValue(), Duration.ofHours(25));
 
-        // 실시간 대시보드 브로드캐스트 (SimpleBroker는 와일드카드 미지원 → 단일 토픽 사용)
         messagingTemplate.convertAndSend("/topic/sensors", saved);
 
-        // 자동제어 판단 및 명령 발행
         SensorSnapshot snapshot = SensorSnapshot.builder()
             .deviceId(deviceId)
             .sensorValues(Map.of(payload.getSensorType(), payload.getValue()))

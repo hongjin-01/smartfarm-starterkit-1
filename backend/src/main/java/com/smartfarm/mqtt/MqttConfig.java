@@ -16,10 +16,18 @@ public class MqttConfig {
     @Value("${mqtt.client-id}")
     private String clientId;
 
+    @Value("${mqtt.username}")
+    private String username;
+
+    @Value("${mqtt.password}")
+    private String password;
+
     @Bean
     public MqttClient mqttClient() throws MqttException {
         MqttClient client = new MqttClient(brokerUrl, clientId);
         MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(username);
+        options.setPassword(password.toCharArray());
         options.setAutomaticReconnect(true);
         options.setCleanSession(false);
         options.setConnectionTimeout(10);
