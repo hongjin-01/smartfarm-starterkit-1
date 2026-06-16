@@ -1,0 +1,29 @@
+{
+  "env": {
+    "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash C:/Users/<사용자명>/.claude/scripts/slack_notify.sh notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash C:/Users/<사용자명>/.claude/scripts/slack_notify.sh stop"
+          }
+        ]
+      }
+    ]
+  }
+}
